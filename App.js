@@ -1,20 +1,53 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text, View, StyleSheet, Button } from 'react-native';
+import React, { useEffect, useState } from 'react';
 
-export default function App() {
+
+
+const ClientesScreen = () => {
+  const [clientes, setClientes] = useState([]);
+
+  useEffect(() => {
+    const obtenerClientes = async () => {
+      try {
+        const response = await fetch('http://localhost/proyectos/API/mostrar.php');
+        const data = await response.json();
+        setClientes(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    obtenerClientes();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      <View style={styles.fixToText}>
+
+      
+      {clientes.map((cliente, index) => (
+        <Button style={styles.botones} key={index} title={cliente.nombre}/>
+      ))}
+
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
+  fixToText: {
+    justifyContent: 'space-between',
+    width: 300,
+  },
+  botones: {
+    margin: 100,
+    padding: 100
+  }
 });
+
+export default ClientesScreen;
